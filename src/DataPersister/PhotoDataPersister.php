@@ -16,6 +16,7 @@ class PhotoDataPersister implements ContextAwareDataPersisterInterface{
         public function supports($data, array $context = []): bool
         {
             if($data instanceof Photos){
+                // dd($data);
                 return true;
             }
             else{
@@ -23,11 +24,12 @@ class PhotoDataPersister implements ContextAwareDataPersisterInterface{
             }
         }
 
+
         public function persist($data, array $context = [])
         {
 
             $photo = $data;
-            // dd($photo);
+            // dd($context);
 
             # todo : recuperer le nom de l'user pour le naming personnalisé
             $photo->setImageName('image_truc');

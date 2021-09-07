@@ -18,7 +18,7 @@ final class UploadController extends AbstractController
         Request $request,
     ) : Photos
     {
-        // dd($request->attributes->get('data'));
+        
 
         # Ici, on a un objet de type Symfony\Component\HttpFoundation\File\UploadedFile
         # où le mimeType est de type : "application/octet-stream"
@@ -39,6 +39,8 @@ final class UploadController extends AbstractController
         # on retourne un objet de type App\Entity\Photos,
         # qui n'a ni id, ni contentUrl, ni filePath
         # mais seulement un object de type UploadedFile dans son champ ' +file '
+
+        // dd($photos);
         return $photos;
     }
 }

@@ -1,0 +1,10 @@
+Attention, si on utilise un namer custom, 
+    ici en configurant 
+        namer: App\Naming\AvatarNameNamer
+    dans config/package/vich_upload...
+
+il faut s'assurer de le déclarer comme service PUBLIC :
+
+    dans config/services.yaml
+        App\Naming\AvatarNameNamer:
+        public: true

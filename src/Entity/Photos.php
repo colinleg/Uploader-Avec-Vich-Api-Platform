@@ -17,25 +17,36 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * 
  */
 #[ApiResource(
-    // iri: 'http://schema.org/MediaObject',
-    itemOperations: ['get'],
+    
+    itemOperations: [
+        'get' => [
+            'openapi_context' => [
+                'summary' => 'Ne pas supprimer : utilisé par Api Platform'
+            ]
+        ]
+    ],
     collectionOperations: [
+        # cheminement custom : UploadController -> AvatarNameNamer -> PhotoDataPersister
+        # correspond à "Uploader une image" dans la partie front
         'upload' => [
             'method' => 'post',
-            'normalizationContext' => ['groups' => ['photos:read']],
+            'path' => '/photos/upload',
             'controller' => UploadController::class,
             'deserialize' => false,
             'validate' => false,
             'openapi_context' => [
+                'summary' => 'Uploader une image',
                 'requestBody' => [
                     'content' => [
                         'multipart/form-data' => [
                             'schema' => [
-                                // 'type' => 'object',
-                                // 'properties' => [
-                                //     'type' => 'string',
-                                //     'format' => 'binary'
-                                // ]
+                                'type' => 'object',
+                                'properties' => [
+                                    'photos' => [
+                                        'type' => 'string',
+                                        'format' => 'binary'
+                                    ]
+                                ]
                             ]
                         ]
                     ]
