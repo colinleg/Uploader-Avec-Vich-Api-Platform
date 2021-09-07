@@ -3,45 +3,42 @@
 namespace App\Controller;
 
 use App\Entity\Photos;
-use App\Service\UploadService;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+// use Symfony\Component\HttpFoundation\Response;
+// use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class UploadController extends AbstractController
+#[AsController]
+final class UploadController extends AbstractController
 {
-    // #[Route('/upload', name: 'upload')]
-    // public function index(): Response
-    // {
-    //     return $this->render('upload/index.html.twig', [
-    //         'controller_name' => 'UploadController',
-    //     ]);
-    // }
 
     public function __invoke(
         Request $request,
-        // UploadService $uploadService
-    )
+    ) : Photos
     {
-        // dd($request);
+        // dd($request->attributes->get('data'));
 
-        // $photo = $request->files->get('photo');
-        // $photo = $request->attributes->get('data');
-        // $photo = $request->files->get('photo');
-        // $directory = $this->getParameter('images_directory');
-        // $uploadService->upload($photo, $directory);
-
+        # Ici, on a un objet de type Symfony\Component\HttpFoundation\File\UploadedFile
+        # où le mimeType est de type : "application/octet-stream"
         $file = $request->files->get('photos');
-
+        // $file = $request->attributes->get('photos');
+        // dd($file);
         if(!$file){
-            throw new BadRequestHttpException('"file" is required');
+            throw new BadRequestHttpException('"photos" is required');
         }
 
         $photos = new Photos();
-        $photos->file = $file;
+        // $photos->file = $file;
+        $photos->setImageFile($file);
+        $photos->setUpdatedAt(new \DateTime());
+        
+        // dd($photos);
 
+        # on retourne un objet de type App\Entity\Photos,
+        # qui n'a ni id, ni contentUrl, ni filePath
+        # mais seulement un object de type UploadedFile dans son champ ' +file '
         return $photos;
     }
 }

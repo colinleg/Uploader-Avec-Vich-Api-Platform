@@ -1,0 +1,1 @@
+Ce bundle fait l'upload en utilisant les hooks prePersist et preUpdate de Doctrine Event Listener.

@@ -2,33 +2,40 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Controller\UploadController;
-use App\Repository\PhotosRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Controller\UploadController;
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiResource;
+use DateTime;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=PhotosRepository::class)
- * @Vich\Uploadable()
+ * @Vich\Uploadable
+ * 
  */
 #[ApiResource(
+    // iri: 'http://schema.org/MediaObject',
+    itemOperations: ['get'],
     collectionOperations: [
         'upload' => [
+            'method' => 'post',
+            'normalizationContext' => ['groups' => ['photos:read']],
             'controller' => UploadController::class,
-            'deserialize' => false, 
+            'deserialize' => false,
             'validate' => false,
             'openapi_context' => [
                 'requestBody' => [
                     'content' => [
                         'multipart/form-data' => [
                             'schema' => [
-                                'type' => 'object',
-                                'properties' => [
-                                    'type' => 'string',
-                                    'format' => 'binary'
-                                ]
+                                // 'type' => 'object',
+                                // 'properties' => [
+                                //     'type' => 'string',
+                                //     'format' => 'binary'
+                                // ]
                             ]
                         ]
                     ]
@@ -47,22 +54,73 @@ class Photos
     private $id;
 
     /**
-     * Undocumented variable
+     * @ORM\Column(type="string")
      *
-     * @Vich\UploadableField(mapping="photos", FileNameProperty="filePath")
+     * @var string|null
      */
-    public ?File $file;
+    private $imageName;
 
     /**
-     * @ORM\Column(nullable=true)
+     * @var File|null remarque : ce n'est pas une column Doctrine
+     * @Vich\UploadableField(mapping="photos", fileNameProperty="imageName")
      */
-    public $filePath = null;
-    
+    private ?File $imageFile;
+
+    /**
+    * Dernier Update
+    *
+    * @ORM\Column(type="datetime")
+    * @var \DatetimeInterface|null
+    */
+    private $updatedAt;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+    * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+    * of 'UploadedFile' is injected into this setter to trigger the update. If this
+    * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+    * must be able to accept an instance of 'File' as the bundle will inject one here
+    * during Doctrine hydration.
+    *
+    * Une astuce de symfony pour contourner le updatedAt ? 
+    *
+    * @param File $imageFile
+    */
+    public function setImageFile(?File $imageFile = null) : void
+    {
+        $this->imageFile = $imageFile;
+
+        if(null !== $imageFile){
+            $this->updatedAt = new \DateTime();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getUpdatedAt(): DateTime
+    {
+        return $this->updatedAt;
+    }
+    
+    public function setUpdatedAt(DateTime $dateTime){
+        $this->updatedAt = $dateTime;
+    }
     
 }

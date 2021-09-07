@@ -36,14 +36,6 @@ use Doctrine\ORM\Mapping as ORM;
                 ]
             ]
         ],
-
-        'upload_photo' => [
-            'method' => 'post',
-            'path' => '/upload',
-            'deserialize' => false,
-            'controller' => UploadController::class
-            // 'openapi_context' => 
-        ]
     ],
     itemOperations: ['get']
 )]

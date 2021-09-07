@@ -1,0 +1,11 @@
+ne pas oubliger de faire accepter le multipart/formdata par APi Platform, dans config/packages/api_platform
+
+api_platform:
+    formats:
+        json: ['application/json']
+        jsonld: ['application/ld+json']
+        html: ['text/html']
+        multipart: ['multipart/form-data']
+
+au 7 septembre 2021 : ne pas utiliser des attributes php 8 avec Vich, encore en cours 
+de développement, beaucoup de bugs.
